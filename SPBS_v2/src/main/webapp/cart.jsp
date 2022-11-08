@@ -53,6 +53,7 @@ var price = 0;
 			<div class="jumbotron" style="padding-top : 50px;">
 				<h3>장바구니</h3>
 				<br>
+				<form action="orderConfirm.jsp" method="post">
 				<table style="border-bottom:1px solid;">
 				<tr>
 					<td>
@@ -70,11 +71,50 @@ var price = 0;
 					<td>
 						삭제
 					</td>
-				</tr>
+				</tr>				
 				<%for(int i = 0 ; i < ItemList.size(); i ++) {%>
+				<script>
+			      $( document ).ready( function() {
+			        $( '#quantity<%=i%>' ).change( function() {
+			        	const checkbox = document.getElementById('checkbox<%=i%>');
+			        	const is_checked = checkbox.checked;
+			          if(is_checked) {
+			          var a = document.getElementById('quantity<%=i%>').value;
+			          if(a < 1) {
+			        	  alert('1보다 작은 수를 주문하실수는 없습니다.');
+			        	  document.getElementById('quantity<%=i%>').value = preQuantity<%=i%>;
+			        	  return;
+			          } else if (a > maxQuantity<%=i%>) {
+			        	  alert('현재 재고 ' + maxQuantity<%=i%> + '보다 많이 주문하실수는 없습니다.');
+			        	  document.getElementById('quantity<%=i%>').value = preQuantity<%=i%>;
+			        	  return;
+			          }
+			          var b = <%=ItemList.get(i).getItemPrice()%>;
+			          if(preQuantity<%=i%> > a) {
+			        	  for(let i = 0; i < (preQuantity<%=i%> - a); i++) {
+			        	  	price -= b;
+			        	  	preQuantity<%=i%>--;
+			        	  	count--;
+			        	  }
+			          } else {
+			        	  for(let i = 0; i < (a - preQuantity<%=i%>); i++) {
+			        	  	price += b;
+			        	  	preQuantity<%=i%>++;
+			        	  	count++;
+			        	  }
+			             }
+			          } else {
+			        	  alert('먼저 체크를 해주세요');
+			        	  document.getElementById('quantity<%=i%>').value = preQuantity<%=i%>;
+			        	  return;
+			          }
+			          document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
+			        } );
+			      } );
+    			</script>
 				<tr>
 					<td>
-						<input type="checkbox" onclick='is_checked<%=i%>()' id="checkbox<%=i%>">
+						<input type="checkbox" onclick='is_checked<%=i%>()' id="checkbox<%=i%>" name="checkbox" value="<%=ItemList.get(i).getItemID()%>" checked>
 					</td>
 					<td>
 						<img src="<%if(ItemList.get(i).getItemContentImagePath() != null && !ItemList.get(i).getItemContentImagePath().equals("")) { %>							
@@ -85,10 +125,21 @@ var price = 0;
 					</td>
 					<td>
 						<%=ItemList.get(i).getItemPrice()%>원
+						<input id="price<%=i%>" type="hidden" value="<%=ItemList.get(i).getItemPrice()%>">
 					</td>
+					<script>
+						for(let i = 0; i < <%=cartLists.get(i).getQuantity()%>; i++) {
+							price += <%=ItemList.get(i).getItemPrice()%>;
+							count++;	
+						}
+					</script>
 					<td>
-						<input type="number" value="<%=cartLists.get(i).getQuantity()%>" name="quantity<%=i%>" min="1" max="<%=ItemList.get(i).getItemStock()%>"/>
+						<input id="quantity<%=i%>" type="number" value="<%=cartLists.get(i).getQuantity()%>" name="quantity<%=i%>" min="1" max="<%=ItemList.get(i).getItemStock()%>"/>
 					</td>
+					<script>
+						var preQuantity<%=i%> = <%=cartLists.get(i).getQuantity()%>;
+						var maxQuantity<%=i%> = <%=ItemList.get(i).getItemStock()%>;
+					</script>
 					<td>
 						<a class="btn btn-light" href="deleteCartItemAction.jsp?cartID=<%=cartLists.get(i).getCartID()%>">삭제</a>
 					</td>
@@ -98,20 +149,34 @@ var price = 0;
 						const checkbox = document.getElementById('checkbox<%=i%>');
 						const is_checked = checkbox.checked;
 						if(is_checked){
-						price += <%=ItemList.get(i).getItemPrice()%>
-						count++;
+						for(let i = 0; i < preQuantity<%=i%>; i++) {
+							price += <%=ItemList.get(i).getItemPrice()%>
+							count++;
+						}
 						document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
 						} else {
-							price -= <%=ItemList.get(i).getItemPrice()%>
-							count--;
+							for(let i = 0; i < preQuantity<%=i%>; i++) {
+								price -= <%=ItemList.get(i).getItemPrice()%>
+								count--;
+							}
 							document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
+						}
+						if(count == 0) {
+							document.getElementById('result').innerText = "";
+							btn.disabled = true;
+						} else {
+							btn.disabled = false;
 						}
 					}
 				</script>
-				<%}%>
+				<%}%>				
 				</table>
 				<a id="result"></a>
-				<input class="btn btn-primary" type="submit" value="주문">
+				<input id="btn" class="btn btn-primary" type="submit" value="주문">
+				</form>
+				<script>
+				document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
+				</script>
 			</div>		
 			</div>
 		</div>

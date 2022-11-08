@@ -105,7 +105,13 @@ if(itemBigCategory != null) {
 			script.println("alert('데이터베이스 오류가 발생했습니다.')");
 			script.println("history.back()");
 			script.println("</script>");
-		} else {
+		} else if (result == -3) {
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('현재 재고보다 더 많은양을 장바구니에 집어넣으셨습니다.')");
+			script.println("history.back()");
+			script.println("</script>");
+		}else {
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("alert('장바구니에 성공적으로 저장했습니다.')");

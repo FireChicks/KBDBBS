@@ -7,12 +7,13 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import item.Item;
+import item.ItemDAO;
 
 public class CartDAO {
 	private Connection conn;
 	private PreparedStatement pstmt;
 	private ResultSet rs;
-
+	
 	public CartDAO() {
 		try {
 			String dbURL = "jdbc:mysql://localhost:3306/SPBS";
@@ -44,6 +45,19 @@ public class CartDAO {
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(SQL);
 			pstmt.setInt(1, cartID);		
+			return pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	public int deleteCart(String userID, int itemID) {
+		String SQL = "DELETE FROM cart WHERE userID = ? AND itemID = ?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, userID);
+			pstmt.setInt(2, itemID);		
 			return pstmt.executeUpdate();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -85,19 +99,58 @@ public class CartDAO {
 		if(count(cart.getUserID()) == 10) {
 			return -2;
 		}
-		String SQL = "INSERT INTO cart VALUE (?, ?, ?, ?)";
-		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			pstmt.setInt(1, getNext());
-			pstmt.setString(2, cart.getUserID());
-			pstmt.setInt(3, cart.getItemID());
-			pstmt.setInt(4, cart.getQuantity());
-			return pstmt.executeUpdate();
+		int quantity;
+		if((quantity = checkIsExist(cart)) != 0) {
+			String SQL = "UPDATE cart SET quantity = ? WHERE userID = ? AND itemID = ?";
+			try {
+				ItemDAO itemDAO = new ItemDAO();
+				int maxQuantity = itemDAO.getItem(cart.getItemID()).getItemStock();
+				if(( quantity + cart.getQuantity() ) < maxQuantity) {
+					PreparedStatement pstmt = conn.prepareStatement(SQL);
+					pstmt.setInt(1, quantity + cart.getQuantity()); 
+					pstmt.setString(2, cart.getUserID());
+					pstmt.setInt(3, cart.getItemID());
+					return pstmt.executeUpdate();
+				} else {
+					return -3;
+				}
 		}catch(Exception e) {
 			e.printStackTrace();
+			}
+		} else {
+			String SQL = "INSERT INTO cart VALUE (?, ?, ?, ?)";
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(SQL);
+				pstmt.setInt(1, getNext());
+				pstmt.setString(2, cart.getUserID());
+				pstmt.setInt(3, cart.getItemID());
+				pstmt.setInt(4, cart.getQuantity());
+				return pstmt.executeUpdate();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return -1;
 	}
+	
+	public int checkIsExist(Cart cart) {
+		if(count(cart.getUserID()) == 10) {
+			return 0;
+		}
+		String SQL = "Select quantity FROM cart WHERE itemID = ? AND userID = ?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setInt(1, cart.getItemID());
+			pstmt.setString(2, cart.getUserID());
+			rs = pstmt.executeQuery();
+			rs.next();
+			return rs.getInt(1);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	
 	public ArrayList<Cart> getCart(String userID) {
 		String SQL = "SELECT *  FROM cart WHERE userID = ? ORDER BY cartID DESC";

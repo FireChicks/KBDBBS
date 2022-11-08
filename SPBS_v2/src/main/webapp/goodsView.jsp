@@ -1,3 +1,6 @@
+<%@page import="cart.Cart"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="cart.CartDAO"%>
 <%@page import="java.io.PrintWriter"%>
 <%@page import="item.Item"%>
 <%@page import="item.ItemDAO"%>
@@ -103,6 +106,17 @@ td{
 	}
 	itemSmallCategory = item.getItemSmallCategory();
 	
+	CartDAO cartDAO = new CartDAO();
+	int index = -1;
+	ArrayList<Cart> cartList = null;
+	if(session.getAttribute("userID") != null) {
+		cartList = cartDAO.getCart((String) session.getAttribute("userID"));
+		for(int i = 0; i < cartList.size(); i++ ) {
+				if(cartList.get(i).getItemID() == itemID) {
+					index = i;
+			}		
+		}
+	}
 %>
 <style>
 option {
@@ -219,14 +233,18 @@ option {
 					<td>
 					</td>
 					<td class="exp">
-						<small>수량</small> <input type="number" value="1" name="quantity" min="1" max="<%=item.getItemStock()%>"/>						
+						<small>수량</small> <input type="number" value="1" name="quantity" min="1" max="<%if(index == -1) {%><%=item.getItemStock()%><%}else{%><%=item.getItemStock() - cartList.get(index).getQuantity()%><%}%>"/>						
+					<%if(index != -1) {%>
+						현재 장바구니의 양 : <%=cartList.get(index).getQuantity()%>
+					<%}%>
+					<br> 현재 재고 : <%=item.getItemStock() %>
 					</td>
 				</tr>
 				<tr>
 					<td>
 					</td>	
 					<td class="exp">
-						<input type="submit" class="btn btn-light" value="장바구니"> <input type="submit" class="btn btn-primary" value="바로 구매">
+						<input <%if(item.getItemStock() == 0){%><%="disabled"%><%}%> type="submit" class="btn btn-light" value="장바구니"> <input type="submit" class="btn btn-primary" value="바로 구매">
 					</td>
 				</tr>
 				</table>
