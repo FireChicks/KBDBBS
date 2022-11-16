@@ -36,6 +36,9 @@ if(session.getAttribute("userID") != null) {
 	OrdStatusDAO ordStatDAO = new OrdStatusDAO();
     ArrayList<Item> ItemList = new ArrayList<Item>();
     int pageNumber = 1;
+    if(request.getParameter("pageNumber") != null){
+    	pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+    }
  	ArrayList<Order> orders = ordDAO.getOrders((String)session.getAttribute("userID"), pageNumber);   
 %>
 <style>
@@ -89,6 +92,9 @@ var price = 0;
 						<td>
 							송장 번호
 						</td>
+						<td>
+							주문 상세
+						</td>
 					</tr>
 					<%for(int i = 0; i < orders.size(); i++) { %>
 					<% String[] Address = orders.get(i).getOrderAddress().split("#");%>
@@ -126,9 +132,23 @@ var price = 0;
 						<td>
 							 <%=orders.get(i).getInvoiceNumber()%>
 						</td>
+						<td>
+							<a class="btn btn-success" href="orderDetail.jsp?orderID=<%=orders.get(i).getOrderID()%>">상세</a>
+						</td>
 					</tr>
 					<%}%>
-				</table>	
+				</table>
+				<%
+				if(pageNumber != 1) {
+			%>
+				<a href="orderHistory.jsp?pageNumber=<%= pageNumber - 1%>" class="btn btn-light btn-arraw-Left">이전</a>
+			<%
+				} if(ordDAO.nextPage((String)session.getAttribute("userID"),pageNumber + 1)) {
+			%>
+				<a href="orderHistory.jsp?pageNumber=<%= pageNumber + 1%>" class="btn btn-light btn-arraw-Left">다음</a>
+			<%
+				}
+			%>		
 			</div>		
 			</div>
 		</div>

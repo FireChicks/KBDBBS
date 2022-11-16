@@ -133,12 +133,12 @@ var price = 0;
 					</td>
 					<td>
 						사용 가능한 포인트 <%=user.getUserPoint()%> <br>
-						사용 포인트 <input type="number" id="point" name="point" min="0" max="<%=user.getUserPoint()%>">
+						사용 포인트 <input type="number" id="point" name="point" min="0" max="<%=user.getUserPoint()%>" value="0">
 					</td>
 					<td>
 						사용 가능한 포인트 단위는 10원 단위입니다.
 					</td>
-					<input type="hidden" id="usedPoint" name="usedPoint">
+					<input type="hidden" id="usedPoint" name="usedPoint" value="0">
 				</tr>			
 				</table>
 				<script>

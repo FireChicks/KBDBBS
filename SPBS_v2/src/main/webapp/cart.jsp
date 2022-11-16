@@ -36,7 +36,7 @@ if(session.getAttribute("userID") != null) {
     for(int i = 0; i < cartLists.size(); i ++) {
     	ItemList.add(cartDAO.getItem(cartLists.get(i).getItemID()));
     }
-
+	if(ItemList.size() != 0) {
 %>
 <style>
   tr td {
@@ -89,26 +89,33 @@ var price = 0;
 			        	  document.getElementById('quantity<%=i%>').value = preQuantity<%=i%>;
 			        	  return;
 			          }
+			          a = document.getElementById('quantity<%=i%>').value;
+			          var c = preQuantity<%=i%>;
 			          var b = <%=ItemList.get(i).getItemPrice()%>;
 			          if(preQuantity<%=i%> > a) {
-			        	  for(let i = 0; i < (preQuantity<%=i%> - a); i++) {
+			        	  for(var i = 0; i < (c - a); i++) {
 			        	  	price -= b;
-			        	  	preQuantity<%=i%>--;
-			        	  	count--;
-			        	  }
+			        	  	preQuantity<%=i%> -= 1;
+			        	  	count -= 1;
+			        	  } 	
+			        	  alert(price + '/' + count + '/' + preQuantity<%=i%>);
+			        	  document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
+			        	  return;
 			          } else {
-			        	  for(let i = 0; i < (a - preQuantity<%=i%>); i++) {
+			        	  for(var i = 0; i < (a - c); i++) {
 			        	  	price += b;
-			        	  	preQuantity<%=i%>++;
-			        	  	count++;
+			        	  	preQuantity<%=i%> += 1;
+			        	  	count += 1;			        	  	
 			        	  }
+			        	  alert(price + '/' + count + '/' + preQuantity<%=i%>);	
+			        	  document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
+			        	  return;
 			             }
 			          } else {
 			        	  alert('먼저 체크를 해주세요');
 			        	  document.getElementById('quantity<%=i%>').value = preQuantity<%=i%>;
-			        	  return;
-			          }
-			          document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
+			        	  return;			          }
+			          
 			        } );
 			      } );
     			</script>
@@ -181,6 +188,13 @@ var price = 0;
 			</div>
 		</div>
 	</div>
+<%} else {
+	PrintWriter script = response.getWriter();
+	script.println("<script>");
+	script.println("alert('장바구니에 아무 상품도 존재하지 않습니다.')");
+	script.println("history.back()");
+	script.println("</script>");
+}%>
 <%}else{ 
 	PrintWriter script = response.getWriter();
 	script.println("<script>");

@@ -1,3 +1,5 @@
+<%@page import="message.MessageDAO"%>
+<%@page import="message.Message"%>
 <%@page import="item.ItemDAO"%>
 <%@page import="order.OrdDAO"%>
 <%@page import="user.User"%>
@@ -95,7 +97,7 @@ if(session.getAttribute("userID") != null) {
 		}
 		PrintWriter script = response.getWriter();
 		script.println("<script>");
-		script.println("alert('성공적으로 포인트를 " + point +" 만큼 사용해 주문을 완료했습니다.')");
+		script.println("alert('성공적으로 포인트를 " + point +" 만큼 사용해 주문을 완료했습니다.')");		
 		script.println("location.href = 'main.jsp'");
 		script.println("</script>");
 	} else {
