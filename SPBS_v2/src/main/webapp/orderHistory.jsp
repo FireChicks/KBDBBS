@@ -95,6 +95,9 @@ var price = 0;
 						<td>
 							주문 상세
 						</td>
+						<td>
+							주문 문의
+						</td>
 					</tr>
 					<%for(int i = 0; i < orders.size(); i++) { %>
 					<% String[] Address = orders.get(i).getOrderAddress().split("#");%>
@@ -134,6 +137,9 @@ var price = 0;
 						</td>
 						<td>
 							<a class="btn btn-success" href="orderDetail.jsp?orderID=<%=orders.get(i).getOrderID()%>">상세</a>
+						</td>
+						<td>
+							<a class="btn btn-warning" href="orderInquiry.jsp?orderID=<%=orders.get(i).getOrderID()%>">문의</a>
 						</td>
 					</tr>
 					<%}%>

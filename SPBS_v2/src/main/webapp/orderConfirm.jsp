@@ -168,7 +168,8 @@ var price = 0;
 			        	  document.getElementById('point').value = price; 
 			        	  return;
 			          } else {
-			        	  alert('성공적으로 ' + usePoint + '만큼 포인트를 사용했습니다.');			   
+			        	  alert('성공적으로 ' + usePoint + '만큼 포인트를 사용했습니다.');
+			        	  btn.disabled = false;
 			             }
 			         
 			          document.getElementById('result').innerText = "총 가격 " + resultPrice+ "  원 총 "+ count + "개의 상품을";
@@ -257,6 +258,7 @@ var price = 0;
 				
 				<script>
 				document.getElementById('result').innerText = "총 가격 " + price+ "  원 총 "+ count + "개의 상품을";
+				btn.disabled = true;
 				</script>
 					</div>
 			</div>		
