@@ -53,11 +53,9 @@ var count = 0;
 var price = 0;
 </script>
 <div class="container">
-		<div style="width:100%;">
-		<div  style="width:2000px; margin: 0 auto;">
-			<div class="jumbotron" style="padding-top : 50px;">
+			<div class="jumbotron" >
 				<h3>구매 내역</h3>		
-				<table>
+				<table class="table table-striped">
 					<tr>
 						<td>
 							번호
@@ -156,9 +154,8 @@ var price = 0;
 				}
 			%>		
 			</div>		
-			</div>
 		</div>
-	</div>
+
 <%}else{ 
 	PrintWriter script = response.getWriter();
 	script.println("<script>");
