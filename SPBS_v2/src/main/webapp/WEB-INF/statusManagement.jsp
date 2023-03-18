@@ -278,10 +278,10 @@
 						<td><h5>배송 단계</h5></td>									
 					</tr>															
 					<tr <%if(ordStat.charAt(1) == '1'){%> <%=chekedStatus%> <%}%>>
-						<td>반품중</td>
+						<td>반품 요청</td>
 					</tr>
 					<tr <%if(ordStat.charAt(1) == '2'){%> <%=chekedStatus%> <%}%>>
-						<td>반품 요청</td>
+						<td>반품 중</td>
 					</tr>
 					<tr <%if(ordStat.charAt(1) == '3'){%> <%=chekedStatus%> <%}%>>
 						<td>취소 완료</td>

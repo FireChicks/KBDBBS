@@ -15,10 +15,10 @@ public class ChatDAO {
 
 	public ChatDAO() {
 		try {
-			String dbURL = "jdbc:mysql://localhost:3306/SPBS";
-			String dbID = "root";
-			String dbPassword = "root";
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			String dbURL = "jdbc:mysql://192.168.123.111:3306/spbs";
+			String dbID = "dldi1021";
+			String dbPassword = "@Dlwodbs5025";
+			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(dbURL, dbID, dbPassword);
 		} catch (Exception e) {
 			e.printStackTrace();
